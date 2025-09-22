@@ -48,7 +48,13 @@ python generate.py --device 0 --length 1000 --batch_size 1 --nsamples 5 --temper
 ```
 
 生成结果样例：
-![](屏幕截图 2025-09-22 112032.png)
+![生成结果1](屏幕截图%202025-09-22%20112032.png)
+![生成结果1](屏幕截图%202025-09-22%20112235.png)
 
+可以看到模型可以勉强产出中文语句，并且口吻与语料相符。
 
+由于github文件大小限制，完整训练得到的模型见百度网盘。链接如下：
+通过网盘分享的文件：GPT2_TRAIN
+链接: https://pan.baidu.com/s/16JUvlHg6FIdxsFqAkIIrkQ?pwd=d3nh 提取码: d3nh 
+--来自百度网盘超级会员v5的分享
 
