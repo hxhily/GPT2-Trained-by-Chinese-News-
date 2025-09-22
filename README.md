@@ -4,7 +4,7 @@
 
 ---
 
-## 📌 项目特点
+项目特点
 
 - 使用 **中文新闻语料**（约 279MB），覆盖多领域新闻文本。  
 - 基于 **GPT-2 小模型配置**，在单卡型号为GTX4060TI 16G的GPU上训练。  
@@ -13,9 +13,9 @@
 
 ---
 
-## ⚙️ 模型配置
+模型配置
 
-训练使用的 GPT2 配置如下：
+训练使用的 GPT2 配置如下：（轻量化模型训练配置）
 
 ```json
 {
@@ -28,64 +28,32 @@
   "n_positions": 1024,
   "vocab_size": 13317
 }
+```
 
 
 ---
-⚙️ 参数解读
-📌 基础超参数
 
-initializer_range: 0.02
+执行命令
 
-模型权重初始化范围，默认 0.02。
+训练命令：
 
-控制参数初始值的分布，影响训练稳定性。一般不用改。
+```shell
+{
+python train.py --device 0 --model_config config/model_config_small.json --tokenizer_path cache/vocab_small.txt --raw_data_path data/train.json --tokenized_data_path data/tokenized/ --raw --epochs 1 --batch_size 8 --lr 1.5e-4 --warmup_steps 2000 --log_step 10 --stride 768 --gradient_accumulation 1 --num_pieces 20 --min_length 128 --output_dir model/ --writer_dir tensorboard_summary/
+}
+```
 
-layer_norm_epsilon: 1e-05
+生成命令：
 
-LayerNorm 中的微小常数，避免除零错误。
+```shell
+{
+python generate.py --device 0 --length 1000 --batch_size 1 --nsamples 5 --temperature 0.8 --topk 50 --topp 0.9 --model_config config/model_config_small.json --tokenizer_path cache/vocab_small.txt --model_path model/final_model --prefix 2025年9月22日， --save_samples --save_samples_path samples/ --repetition_penalty 1.2
 
-默认 1e-5 就行。
+}
+```
 
-📌 模型结构
+生成结果样例：
 
-n_ctx: 1024
 
-模型能处理的最大序列长度（上下文窗口）。
 
-意味着一次能看到 1024 个 token。
 
-中文 tokenizer 后一句话大概 20~50 个 token，1024 token 相当于 2~4 页 A4 纸的文本。
-
-越大显存需求越高（O(n²) 注意力计算）。
-
-在 4060Ti 16G 上，1024 是比较合理的选择。
-
-n_embd: 768
-
-每个 token 的 embedding 维度，同时也是 Transformer 隐层大小。
-
-越大表示模型表达能力越强，但计算量也更大。
-
-GPT2-base 是 768，这里也用 768，属于中等配置。
-
-n_head: 12
-
-多头注意力的头数。
-
-n_embd / n_head = 64，这是比较标准的配置。
-
-增加 head 数会提升捕捉不同语义关系的能力，但也会增加显存占用。
-
-n_layer: 10
-
-Transformer Block 的层数。
-
-GPT2-base 是 12 层，你这里用 10 层，比 base 略小，显存压力更轻一些。
-
-在 16G 显存的显卡上，可以支撑 batch size 8 训练没问题。
-
-n_positions: 1024
-
-位置编码的最大长度，通常与 n_ctx 保持一致。
-
-保证模型能利用 1024 token 的位置信息。
