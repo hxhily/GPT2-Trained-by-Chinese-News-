@@ -48,7 +48,7 @@ python generate.py --device 0 --length 1000 --batch_size 1 --nsamples 5 --temper
 ```
 
 生成结果样例：
-
+![](屏幕截图 2025-09-22 112032.png)
 
 
 
